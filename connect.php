@@ -2,7 +2,7 @@
 $server = 'db4free.net';
 $username   = 'myforum101';
 $password   = 'rootroot';
-$database   = 'forum';
+$database   = 'myforum101';
  $connection=mysqli_connect($server, $username,  $password);
 if(!$connection)
 {
