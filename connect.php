@@ -3,7 +3,7 @@ $server = 'localhost';
 $username   = 'root';
 $password   = '';
 $database   = 'forum';
- $connection=mysql_connect($server, $username,  $password);
+ $connection=mysqli_connect($server, $username,  $password);
 if(!$connection)
 {
     exit('Error: could not establish database connection');
