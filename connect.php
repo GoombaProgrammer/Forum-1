@@ -8,7 +8,7 @@ if(!$connection)
 {
     exit('Error: could not establish database connection');
 }
-$db=mysql_select_db($database);
+$db=mysqli_select_db($database);
 if(!$db)
 {
     exit('Error: could not select the database');
