@@ -2,78 +2,80 @@
 include 'connect.php';
 include 'header.php';
  
-echo '<h3>Sign up</h3>';
- 
-if($_SERVER['REQUEST_METHOD'] != 'POST')
+echo '<h3>Sign in</h3>';
+if(isset($_SESSION['signed_in']) && $_SESSION['signed_in'] == true)
 {
-    echo '<form method="post" action="">
-        Username: <input type="text" name="user_name" /><br>
-        Password: <input type="password" name="user_pass"><br>
-        Password again: <input type="password" name="user_pass_check"><br>
-        E-mail: <input type="email" name="user_email">
-        <input type="submit" value="Register" />
-     </form>';
+    echo 'You are already signed in, you can <a href="signout.php">sign out</a> if you want.';
 }
 else
 {
-    $errors = array();
-    if(isset($_POST['user_name']))
+    if($_SERVER['REQUEST_METHOD'] != 'POST')
     {
-        if(!ctype_alnum($_POST['user_name']))
-        {
-            $errors[] = 'The username can only contain letters and digits.';
-        }
-        if(strlen($_POST['user_name']) > 30)
-        {
-            $errors[] = 'The username cannot be longer than 30 characters.';
-        }
+        echo '<form method="post" action="">
+            Username: <input type="text" name="user_name" />
+            Password: <input type="password" name="user_pass">
+            <input type="submit" value="Sign in" />
+         </form>';
     }
     else
     {
-        $errors[] = 'The username field must not be empty.';
-    }
-     
-     
-    if(isset($_POST['user_pass']))
-    {
-        if($_POST['user_pass'] != $_POST['user_pass_check'])
+        $errors = array();
+        if(!isset($_POST['user_name']))
         {
-            $errors[] = 'The two passwords did not match.';
+            $errors[] = 'The username field must not be empty.';
         }
-    }
-    else
-    {
-        $errors[] = 'The password field cannot be empty.';
-    }
-     
-    if(!empty($errors)) 
-    {
-        echo 'Uh-oh.. a couple of fields are not filled in correctly..';
-        echo '<ul>';
-        foreach($errors as $key => $value)
+         
+        if(!isset($_POST['user_pass']))
         {
-            echo '<li>' . $value . '</li>';
+            $errors[] = 'The password field must not be empty.';
         }
-        echo '</ul>';
-    }
-    else
-    {
-        $sql = "INSERT INTO
-                    users(user_name, user_pass, user_email ,user_date, user_level)
-                VALUES('" . mysql_real_escape_string($_POST['user_name']) . "',
-                       '" . sha1($_POST['user_pass']) . "',
-                       '" . mysql_real_escape_string($_POST['user_email']) . "',
-                        NOW(),
-                        0)";
-                         
-        $result = mysql_query($sql);
-        if(!$result)
+         
+        if(!empty($errors))
         {
-            echo 'Something went wrong while registering. Please try again later.';
+            echo 'Uh-oh.. a couple of fields are not filled in correctly..';
+            echo '<ul>';
+            foreach($errors as $key => $value)
+            {
+                echo '<li>' . $value . '</li>';
+            }
+            echo '</ul>';
         }
         else
         {
-            echo 'Successfully registered. You can now <a href="signin.php">sign in</a> and start posting! :-)';
+            $sql = "SELECT 
+                        user_id,
+                        user_name,
+                        user_level
+                    FROM
+                        users
+                    WHERE
+                        user_name = '" . mysql_real_escape_string($_POST['user_name']) . "'
+                    AND
+                        user_pass = '" . sha1($_POST['user_pass']) . "'";
+                         
+            $result = mysql_query($sql);
+            if(!$result)
+            {
+                echo 'Something went wrong while signing in. Please try again later.';
+            }
+            else
+            {
+                if(mysql_num_rows($result) == 0)
+                {
+                    echo 'You have supplied a wrong user/password combination. Please try again.';
+                }
+                else
+                {
+                    
+                    $_SESSION['signed_in'] = true;
+                    while($row = mysql_fetch_assoc($result))
+                    {
+                        $_SESSION['user_id']    = $row['user_id'];
+                        $_SESSION['user_name']  = $row['user_name'];
+                    }
+                    echo 'Welcome, ' . $_SESSION['user_name'] . '. <a href="index.php">Proceed to the forum overview</a>.';
+                }
+            }
         }
     }
 }
