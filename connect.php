@@ -1,8 +1,8 @@
 <?php
-$server = 'db4free.net';
-$username   = 'myforum101';
-$password   = 'rootroot';
-$database   = 'myforum101';
+$server = 'sql12.freesqldatabase.com';
+$username   = 'sql12218697';
+$password   = 'uJEXQMxpDw';
+$database   = 'sql12218697';
  $connection=mysqli_connect($server, $username,  $password);
 if(!$connection)
 {
