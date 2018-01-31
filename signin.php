@@ -2,83 +2,38 @@
 include 'connect.php';
 include 'header.php';
  
-echo '<h3>Sign in</h3>';
-if(isset($_SESSION['signed_in']) && $_SESSION['signed_in'] == true)
-{
-    echo 'You are already signed in, you can <a href="signout.php">sign out</a> if you want.';
-}
-else
-{
-    if($_SERVER['REQUEST_METHOD'] != 'POST')
-    {
-        echo '<form method="post" action="">
-            Username: <input type="text" name="user_name" />
-            Password: <input type="password" name="user_pass">
-            <input type="submit" value="Sign in" />
-         </form>';
-    }
-    else
-    {
-        $errors = array();
-        if(!isset($_POST['user_name']))
-        {
-            $errors[] = 'The username field must not be empty.';
-        }
-         
-        if(!isset($_POST['user_pass']))
-        {
-            $errors[] = 'The password field must not be empty.';
-        }
-         
-        if(!empty($errors))
-        {
-            echo 'Uh-oh.. a couple of fields are not filled in correctly..';
-            echo '<ul>';
-            foreach($errors as $key => $value)
-            {
-                echo '<li>' . $value . '</li>';
-            }
-            echo '</ul>';
-        }
-        else
-        {
-            $sql = "SELECT 
-                        user_id,
-                        user_name,
-                        user_level
-                    FROM
-                        users
-                    WHERE
-                        user_name = '" . mysql_real_escape_string($_POST['user_name']) . "'
-                    AND
-                        user_pass = '" . sha1($_POST['user_pass']) . "'";
-                         
-            $result = mysql_query($sql);
-            if(!$result)
-            {
-                echo 'Something went wrong while signing in. Please try again later.';
-            }
-            else
-            {
-                if(mysql_num_rows($result) == 0)
-                {
-                    echo 'You have supplied a wrong user/password combination. Please try again.';
-                }
-                else
-                {
-                    
-                    $_SESSION['signed_in'] = true;
-                    while($row = mysql_fetch_assoc($result))
-                    {
-                        $_SESSION['user_id']    = $row['user_id'];
-                        $_SESSION['user_name']  = $row['user_name'];
-                    }
-                    echo 'Welcome, ' . $_SESSION['user_name'] . '. <a href="index.php">Proceed to the forum overview</a>.';
-                }
-            }
-        }
-    }
-}
+<?php  //Start the Session
+session_start();
+ require('connect.php');
+//3. If the form is submitted or not.
+//3.1 If the form is submitted
+if (isset($_POST['username']) and isset($_POST['password'])){
+//3.1.1 Assigning posted values to variables.
+$username = $_POST['username'];
+$password = $_POST['password'];
+//3.1.2 Checking the values are existing in the database or not
+$query = "SELECT * FROM `user` WHERE username='$username' and password='$password'";
  
-include 'footer.php';
+$result = mysqli_query($connection, $query) or die(mysqli_error($connection));
+$count = mysqli_num_rows($result);
+//3.1.2 If the posted values are equal to the database values, then session will be created for the user.
+if ($count == 1){
+$_SESSION['username'] = $username;
+}else{
+//3.1.3 If the login credentials doesn't match, he will be shown with an error message.
+$fmsg = "Invalid Login Credentials.";
+}
+}
+//3.1.4 if the user is logged in Greets the user with message
+if (isset($_SESSION['username'])){
+$username = $_SESSION['username'];
+echo "Hai " . $username . "
+";
+echo "This is the Members Area
+";
+echo "<a href='logout.php'>Logout</a>";
+ 
+}else{
+//3.2 When the user visits the page first time, simple login form will be displayed.
 ?>
+ 
