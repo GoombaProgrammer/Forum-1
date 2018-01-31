@@ -1,84 +1,61 @@
 <?php
-include 'connect.php';
-include 'header.php';
+	require('connect.php');
+    // If the values are posted, insert them into the database.
+    if (isset($_POST['username']) && isset($_POST['password'])){
+        $username = $_POST['username'];
+	$email = $_POST['email'];
+        $password = $_POST['password'];
  
-echo '<h3>Sign in</h3>';
-if(isset($_SESSION['signed_in']) && $_SESSION['signed_in'] == true)
-{
-    echo 'You are already signed in, you can <a href="signout.php">sign out</a> if you want.';
-}
-else
-{
-    if($_SERVER['REQUEST_METHOD'] != 'POST')
-    {
-        echo '<form method="post" action="">
-            Username: <input type="text" name="user_name" />
-            Password: <input type="password" name="user_pass">
-            <input type="submit" value="Sign in" />
-         </form>';
-    }
-    else
-    {
-        $errors = array();
-        if(!isset($_POST['user_name']))
-        {
-            $errors[] = 'The username field must not be empty.';
-        }
-         
-        if(!isset($_POST['user_pass']))
-        {
-            $errors[] = 'The password field must not be empty.';
-        }
-         
-        if(!empty($errors))
-        {
-            echo 'Uh-oh.. a couple of fields are not filled in correctly..';
-            echo '<ul>';
-            foreach($errors as $key => $value)
-            {
-                echo '<li>' . $value . '</li>';
-            }
-            echo '</ul>';
-        }
-        else
-        {
-            $sql = "SELECT 
-                        user_id,
-                        user_name,
-                        user_level
-                    FROM
-                        users
-                    WHERE
-                        user_name = '" . mysql_real_escape_string($_POST['user_name']) . "'
-                    AND
-                        user_pass = '" . sha1($_POST['user_pass']) . "'";
-                         
-            $result = mysql_query($sql);
-            if(!$result)
-            {
-                echo 'Something went wrong while signing in. Please try again later.';
-            }
-            else
-            {
-                if(mysql_num_rows($result) == 0)
-                {
-                    echo 'You have supplied a wrong user/password combination. Please try again.';
-                }
-                else
-                {
-                    
-                    $_SESSION['signed_in'] = true;
-                    while($row = mysql_fetch_assoc($result))
-                    {
-                        $_SESSION['user_id']    = $row['user_id'];
-                        $_SESSION['user_name']  = $row['user_name'];
-                    }
-                    echo 'Welcome, ' . $_SESSION['user_name'] . '. <a href="index.php">Proceed to the forum overview</a>.';
-                }
-            }
+        $query = "INSERT INTO `user` (username, password, email) VALUES ('$username', '$password', '$email')";
+        $result = mysqli_query($connection, $query);
+        if($result){
+            $smsg = "User Created Successfully.";
+        }else{
+            $fmsg ="User Registration Failed";
         }
     }
-}
- 
-include 'footer.php';
-?>
+    ?>
+<html>
+<head>
+	<title>User Registeration Using PHP & MySQL</title>
+	
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" >
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" >
+
+<link rel="stylesheet" href="styles.css" >
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+      <form class="form-signin" method="POST">
+      
+      <?php if(isset($smsg)){ ?><div class="alert alert-success" role="alert"> <?php echo $smsg; ?> </div><?php } ?>
+      <?php if(isset($fmsg)){ ?><div class="alert alert-danger" role="alert"> <?php echo $fmsg; ?> </div><?php } ?>
+        <h2 class="form-signin-heading">Please Register</h2>
+        <div class="input-group">
+	  <span class="input-group-addon" id="basic-addon1">@</span>
+	  <input type="text" name="username" class="form-control" placeholder="Username" required>
+	</div>
+        <label for="inputEmail" class="sr-only">Email address</label>
+        <input type="email" name="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+        <label for="inputPassword" class="sr-only">Password</label>
+        <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required>
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" value="remember-me"> Remember me
+          </label>
+        </div>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
+        <a class="btn btn-lg btn-primary btn-block" href="login.php">Login</a>
+      </form>
+</div>
+
+</body>
+
+</html>
