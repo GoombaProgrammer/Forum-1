@@ -30,7 +30,6 @@ echo "This is the Members Area
 ";
 echo "<a href='logout.php'>Logout</a>";
  
-}else{
-//3.2 When the user visits the page first time, simple login form will be displayed.
+}
+include 'footer.php';
 ?>
- 
