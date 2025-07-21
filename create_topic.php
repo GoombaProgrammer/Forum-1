@@ -1,7 +1,6 @@
 <?php
-session_start();
-include 'connect.php';
 include 'header.php';
+include 'connect.php';
  
 echo "<h2>Create a topic</h2>";
 if(!isset($_SESSION['signed_in']))

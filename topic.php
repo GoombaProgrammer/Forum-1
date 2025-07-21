@@ -45,14 +45,15 @@ else
                     echo '<td class="leftpart">';
                         echo $row["user_name"].'<br>'.($row["topic_date"]);
                     echo '<td class="rightpart">';
-                        echo $row['post_content'];
+                        echo htmlentities($row["post_content"]).'<br>';
                     echo '</td>';
                 echo '</tr>';
+                $row = mysqli_fetch_assoc($result);
             }
             if($_SERVER['REQUEST_METHOD'] != 'POST')
             {
-                echo "<h2>Reply</h2>"."<form method='post' action='reply.php?topic_id=' ". mysqli_real_escape_string($connection, $_GET['topic_id']). ">
-                    <textarea name='reply-content'></textarea>
+                echo "<h2>Reply</h2>"."<form method='post' action='reply.php?topic_id=". $t. "'>
+                    <textarea name='reply_content'></textarea>
                     <input type='submit' value='Submit reply' />
                 </form>";
             }

@@ -1,8 +1,6 @@
 <?php
 include 'connect.php';
 include 'header.php';
- echo 'caca'.$_GET["topic_id"].'<br>';
- echo  $_SERVER['REQUEST_METHOD'].'dfsdfdfsdfsdfsd';
 /*if($_SERVER['REQUEST_METHOD'] != 'POST')
 {
     echo 'This file cannot be called directly.';
@@ -16,17 +14,15 @@ else
     }
     else
     {
-        $sql = "INSERT INTO
-                    posts(post_content,
-                          post_date,
-                          post_topic,
-                          post_by)
-                VALUES ('" . $_POST['reply-content'] . "',
+        $sql = "INSERT INTO posts(post_content,
+                           post_date,
+                           post_topic,
+                           post_by)
+                VALUES('" . mysqli_real_escape_string($connection, $_POST['reply_content']) . "',
                         NOW(),
-                        " . mysqli_real_escape_string($connection, $_POST['topic_id']) . ",
-                        ". $_SESSION['user_id'] . ")";
-                         
-                         echo $_POST["reply-content"].'<br>'.'fdcvff'.'<br>' . $_POST["topic_id"]. 'azaza'.'<br>'.$_SESSION['user_id'].'bbtbtt';
+                        " . mysqli_real_escape_string($connection, $_GET['topic_id']) . ",
+                        " . $_SESSION['user_id'] . "
+                        )";
         $result = mysqli_query($connection, $sql);
         if(!$result)
         {
@@ -34,7 +30,7 @@ else
         }
         else
         {
-            echo 'Your reply has been saved, check out <a href="topic.php?id=' . htmlentities($_GET['id']) . '">the topic</a>.';
+            echo 'Your reply has been saved, check out <a href="topic.php?id=' . htmlentities($_GET['topic_id']) . '">the topic</a>.';
         }
     }
  

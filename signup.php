@@ -14,7 +14,7 @@ if($_SERVER['REQUEST_METHOD'] != 'POST')
         Password: <input type="password" name="user_pass">
         Password again: <input type="password" name="user_pass_check">
         E-mail: <input type="email" name="user_email">
-        <input type="submit" value="Add category" />
+        <input type="submit" value="Add user" />
      </form>';
 }
 else
