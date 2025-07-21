@@ -19,7 +19,7 @@ else
                 FROM
                     categories";
          
-        $result = mysql_query($sql);
+        $result = mysqli_query($connection, $sql);
          
         if(!$result)
         {
@@ -27,7 +27,7 @@ else
         }
         else
         {
-            if(mysql_num_rows($result) == 0)
+            if(mysqli_num_rows($result) == 0)
             {
                 if($_SESSION['user_level'] == 1)
                 {
@@ -46,7 +46,7 @@ else
                     Category:'; 
                  
                 echo '<select name="topic_cat">';
-                    while($row = mysql_fetch_assoc($result))
+                    while($row = mysqli_fetch_assoc($result))
                     {
                         echo '<option value="' . $row['cat_id'] . '">' . $row['cat_name'] . '</option>';
                     }
@@ -61,7 +61,7 @@ else
     else
     {
         $query  = "BEGIN WORK;";
-        $result = mysql_query($query);
+        $result = mysqli_query($connection, $query);
          
         if(!$result)
         {
@@ -69,50 +69,50 @@ else
         }
         else
         {
-            $sql = "INSERT INTO 
+            $sql = "INSERT INTO
                     topics(topic_subject,
                            topic_date,
                            topic_cat,
                            topic_by)
-               VALUES('" . mysql_real_escape_string($_POST['topic_subject']) . "',
+               VALUES('" . mysqli_real_escape_string($connection, $_POST['topic_subject']) . "',
                            NOW(),
-                           " . mysql_real_escape_string($_POST['topic_cat']) . ",
+                           " . mysqli_real_escape_string($connection, $_POST['topic_cat']) . ",
                            " . $_SESSION['user_id'] . "
                            )";
-                  
-            $result = mysql_query($sql);
+
+            $result = mysqli_query($connection, $sql);
             if(!$result)
             {
-                echo 'An error occured while inserting your data. Please try again later.' . mysql_error();
+                echo 'An error occured while inserting your data. Please try again later.' . mysqli_error($connection);
                 $sql = "ROLLBACK;";
-                $result = mysql_query($sql);
+                $result = mysqli_query($connection, $sql);
             }
             else
-            {   
-                $topicid = mysql_insert_id();   
+            {
+                $topicid = mysqli_insert_id($connection);
                 $sql = "INSERT INTO
                             posts(post_content,
                                   post_date,
                                   post_topic,
                                   post_by)
                         VALUES
-                            ('" . mysql_real_escape_string($_POST['post_content']) . "',
+                            ('" . mysqli_real_escape_string($connection, $_POST['post_content']) . "',
                                   NOW(),
                                   " . $topicid . ",
                                   " . $_SESSION['user_id'] . "
                             )";
-                $result = mysql_query($sql);
-                 
+                $result = mysqli_query($connection, $sql);
+
                 if(!$result)
                 {
-                    echo 'An error occured while inserting your post. Please try again later.' . mysql_error();
+                    echo 'An error occured while inserting your post. Please try again later.' . mysqli_error($connection);
                     $sql = "ROLLBACK;";
-                    $result = mysql_query($sql);
+                    $result = mysqli_query($connection, $sql);
                 }
                 else
                 {
                     $sql = "COMMIT;";
-                    $result = mysql_query($sql);
+                    $result = mysqli_query($connection, $sql);
                     echo 'You have successfully created <a href="topic.php?topic_id='. $topicid . '">your new topic</a>.';
                 }
             }

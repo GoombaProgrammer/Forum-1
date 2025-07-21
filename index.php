@@ -9,15 +9,15 @@ $sql = "SELECT
             FROM
             categories";
  
-$result = mysql_query($sql,$connection);
+$result = mysqli_query($connection, $sql);
  
 if(!$result)
 {
-    echo 'The categories could not be displayed, please try again later.'.mysql_error();
+    echo 'The categories could not be displayed, please try again later.'.mysqli_error($connection);
 }
 else
 {
-    if(mysql_num_rows($result) == 0)
+    if(mysqli_num_rows($result) == 0)
     {
         echo 'No categories defined yet.';
     }
@@ -28,7 +28,7 @@ else
                 <th>Category</th>
               </tr>'; 
              
-        while($row = mysql_fetch_assoc($result))
+        while($row = mysqli_fetch_assoc($result))
         {               
             echo '<tr>';
                 echo '<td class="leftpart">';

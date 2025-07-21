@@ -16,18 +16,18 @@ else
     }
     else
     {
-        $sql = "INSERT INTO 
+        $sql = "INSERT INTO
                     posts(post_content,
                           post_date,
                           post_topic,
-                          post_by) 
+                          post_by)
                 VALUES ('" . $_POST['reply-content'] . "',
                         NOW(),
-                        " . mysql_real_escape_string($_POST['topic_id']) . ",
+                        " . mysqli_real_escape_string($connection, $_POST['topic_id']) . ",
                         ". $_SESSION['user_id'] . ")";
                          
                          echo $_POST["reply-content"].'<br>'.'fdcvff'.'<br>' . $_POST["topic_id"]. 'azaza'.'<br>'.$_SESSION['user_id'].'bbtbtt';
-        $result = mysql_query($sql,$connection);
+        $result = mysqli_query($connection, $sql);
         if(!$result)
         {
             echo 'Your reply has not been saved, please try again later.';

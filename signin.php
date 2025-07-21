@@ -42,33 +42,33 @@ else
         }
         else
         {
-            $sql = "SELECT 
+            $sql = "SELECT
                         user_id,
                         user_name,
                         user_level
                     FROM
                         users
                     WHERE
-                        user_name = '" . mysql_real_escape_string($_POST['user_name']) . "'
+                        user_name = '" . mysqli_real_escape_string($connection, $_POST['user_name']) . "'
                     AND
                         user_pass = '" . sha1($_POST['user_pass']) . "'";
-                         
-            $result = mysql_query($sql);
+
+            $result = mysqli_query($connection, $sql);
             if(!$result)
             {
                 echo 'Something went wrong while signing in. Please try again later.';
             }
             else
             {
-                if(mysql_num_rows($result) == 0)
+                if(mysqli_num_rows($result) == 0)
                 {
                     echo 'You have supplied a wrong user/password combination. Please try again.';
                 }
                 else
                 {
-                    
+
                     $_SESSION['signed_in'] = true;
-                    while($row = mysql_fetch_assoc($result))
+                    while($row = mysqli_fetch_assoc($result))
                     {
                         $_SESSION['user_id']    = $row['user_id'];
                         $_SESSION['user_name']  = $row['user_name'];
