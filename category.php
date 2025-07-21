@@ -1,30 +1,30 @@
 <?php
 include 'connect.php';
 include 'header.php';
-$sql = 'SELECT
+$sql = "SELECT
             categories.cat_id,
             categories.cat_name,
             categories.cat_description
         FROM
             categories
         WHERE
-            cat_id =' .mysql_real_escape_string($_GET['cat_id']);
- 
-$result = mysql_query($sql,$connection);
+            cat_id = " . mysqli_real_escape_string($connection, $_GET['cat_id']);
+
+$result = mysqli_query($connection, $sql);
  
 if(!$result)
 {
-    echo 'The category could not be displayed, please try again later.' . mysql_error();
+    echo 'The category could not be displayed, please try again later.' . mysqli_error($connection);
 }
 else
 {
-    if(mysql_num_rows($result) == 0)
+    if(mysqli_num_rows($result) == 0)
     {
         echo 'This category does not exist.';
     }
     else
     {
-        while($row = mysql_fetch_assoc($result))
+        while($row = mysqli_fetch_assoc($result))
         {
             echo '<h2>Topics in ′' . $row['cat_name'] . '′ category</h2>';
         }
@@ -36,9 +36,9 @@ else
                 FROM
                     topics
                 WHERE
-                    topic_cat = " . mysql_real_escape_string($_GET['cat_id']);
-         
-        $result = mysql_query($sql);
+                    topic_cat = " . mysqli_real_escape_string($connection, $_GET['cat_id']);
+
+        $result = mysqli_query($connection, $sql);
          
         if(!$result)
         {
@@ -46,7 +46,7 @@ else
         }
         else
         {
-            if(mysql_num_rows($result) == 0)
+            if(mysqli_num_rows($result) == 0)
             {
                 echo 'There are no topics in this category yet.';
             }
@@ -57,7 +57,7 @@ else
                         <th>Topic</th>
                         <th>Created at</th>
                       </tr>'; 
-                while($row = mysql_fetch_assoc($result))
+                while($row = mysqli_fetch_assoc($result))
                 {               
                     echo '<tr>';
                         echo '<td class="leftpart">';

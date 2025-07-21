@@ -14,27 +14,27 @@ FROM
 WHERE
     users.user_id=topics.topic_by AND
     topics.topic_id=posts.post_topic AND
-    topics.topic_id = " . mysql_real_escape_string($_GET['topic_id']);
+    topics.topic_id = " . mysqli_real_escape_string($connection, $_GET['topic_id']);
     
 $t=$_GET['topic_id'];
 //echo 'zzzzz'.$t.'<br>';
-$result = mysql_query($sql);
+$result = mysqli_query($connection, $sql);
 //echo 'fvfdvfdd'.'<br>';
-//echo mysql_num_rows($result).'dffddfdf'.'<br>'; 
+//echo mysqli_num_rows($result).'dffddfdf'.'<br>';
 if(!$result)
 {
-    echo 'The topic could not be displayed, please try again later.' . mysql_error();
+    echo 'The topic could not be displayed, please try again later.' . mysqli_error($connection);
 }
 else
 {
-    if(mysql_num_rows($result) == 0)
+    if(mysqli_num_rows($result) == 0)
     {
         echo 'This topic does not exist.';
     }
     else
     {
-        $row = mysql_fetch_assoc($result);
-        $num=mysql_num_rows($result);
+        $row = mysqli_fetch_assoc($result);
+        $num=mysqli_num_rows($result);
         echo '<table border="1">
           <tr>
             <th>'.$row["topic_subject"].'</th>
@@ -51,7 +51,7 @@ else
             }
             if($_SERVER['REQUEST_METHOD'] != 'POST')
             {
-                echo "<h2>Reply</h2>"."<form method='post' action='reply.php?topic_id=' ". mysql_real_escape_string($_GET['topic_id']). ">
+                echo "<h2>Reply</h2>"."<form method='post' action='reply.php?topic_id=' ". mysqli_real_escape_string($connection, $_GET['topic_id']). ">
                     <textarea name='reply-content'></textarea>
                     <input type='submit' value='Submit reply' />
                 </form>";
@@ -72,11 +72,11 @@ else
                                       post_by) 
                             VALUES ('" . $_POST['reply-content'] . "',
                                     NOW(),
-                                    " . mysql_real_escape_string($t) . ",
+                                    " . mysqli_real_escape_string($connection, $t) . ",
                                     ". $_SESSION['user_id'] . ")";
                                      
                                      echo $_POST["reply-content"].'<br>'.'fdcvff'.'<br>' . $t. 'azaza'.'<br>'.$_SESSION['user_id'].'bbtbtt';
-                    $result = mysql_query($sql,$connection);
+                    $result = mysqli_query($connection, $sql);
                     if(!$result)
                     {
                         echo 'Your reply has not been saved, please try again later.';

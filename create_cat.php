@@ -13,9 +13,9 @@ if($_SERVER['REQUEST_METHOD'] != 'POST')
 else
 {
     $sql = "INSERT INTO categories(cat_name, cat_description)
-       VALUES('". mysql_real_escape_string($_POST['cat_name']) . "',
-             '". mysql_real_escape_string($_POST['cat_description']) ."')";
-    $result = mysql_query($sql);
+       VALUES('". mysqli_real_escape_string($connection, $_POST['cat_name']) . "',
+             '". mysqli_real_escape_string($connection, $_POST['cat_description']) ."')";
+    $result = mysqli_query($connection, $sql);
     if(!$result)
     {
         echo "Error" ;
